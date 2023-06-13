@@ -21,6 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 import BasicModal from './modal';
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -54,17 +55,6 @@ function stableSort(array, comparator) {
     });
     return stabilizedThis.map((el) => el[0]);
 }
-function createData(name, username, email, group, status, createdon) {
-    return {
-        name,
-        username,
-        email,
-        group,
-        status,
-        createdon
-    };
-}
-
 
 
 
@@ -77,31 +67,31 @@ const headCells = [
     },
     {
         id: 'calories',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'Username',
     },
     {
         id: 'fat',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'Email Address',
     },
     {
         id: 'carbs',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'Group',
     },
     {
         id: 'protein',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'Status',
     },
     {
         id: 'Createdon',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'Created on',
     },
@@ -120,7 +110,7 @@ function EnhancedTableHead(props) {
             >
                 <TableCell padding="checkbox">
                     <Checkbox
-                        style={{color: "#22a565"}}
+                        style={{ color: "#22a565" }}
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
@@ -167,13 +157,18 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
     const { numSelected } = props;
-    const [mOpen, setOpen] = React.useState(false);
-    let comp = <BasicModal setRows={props.setRows} mOpen={mOpen}/>;
+    const [row, setRow] = React.useState("");
+    const [index, setIndex] = React.useState(0);
+    const handleClose = () => props.setOpen(false);
+
+
     const editClicked = () => {
         if (props.numSelected > 1 || props.numSelected < 1) {
             alert("Please select only one item");
         } else {
-            setOpen(true);
+            props.setOpen(true);
+            setRow(props.selected);
+            setIndex(props.selectedIndex);
         }
     };
 
@@ -219,8 +214,11 @@ function EnhancedTableToolbar(props) {
                     <Button variant="text" size="small" sx={{ color: "black", textTransform: "none", textDecoration: "underline", "&:hover": { backgroundColor: "whitesmoke", color: "black" } }}>Unselect All</Button>
 
                 </Box>
-                <Box style={{display: "flex"}}>
-                {comp}
+                <Box style={{ display: "flex" }}>
+                    <IconButton aria-label="Example" sx={{ backgroundColor: "whitesmoke", "color": "black", borderRadius: "4px" }}>
+                        <DownloadIcon />
+                    </IconButton>
+                    <BasicModal setRows={props.setRows} open={props.mOpen} setRow={setRow} setOpen={handleClose} row={row} index={index} />
                 </Box>
 
             </Box>
@@ -232,35 +230,50 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-const nRows = [
-    createData('Ramy Mohsen-1', "ramy.mohsen", "ramy.mohsen@google.com", "office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-2', "ramy.mohsen", "ramy.mohsen@google.com", "office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-3', "ramy.mohsen", "ramy.mohsen@google.com", "office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-4', "ramy.mohsen", "ramy.mohsen@google.com", "office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-5', "ramy.mohsen", "ramy.mohsen@google.com", "office", "Locked", "Dec 10, 2022"),
-]    
+function createData(name, username, email, group, status, createdon) {
+    return {
+        name,
+        username,
+        email,
+        group,
+        status,
+        createdon
+    };
+}
 
 
-export default function EnhancedTable({search}) {
+export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [selectedRow, setSelectedRow] = React.useState(0);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+
     let [rows, setRows] = React.useState(nRows);
 
-    
-    
-    function addRow(name, user, email) {
-        
-        setRows([...rows, createData(name, user, email, "office", "Locked", "Dec 10, 2022")]);
-        
+
+    function addRow(name, user, email, userGroup, profile, index = -1) {
+        if (index === -1) {
+            setRows([...rows, createData(name, user, email, userGroup, profile, "Dec 10, 2022")]);
+        } else {
+
+            rows[index].name = name;
+            rows[index].user = user;
+            rows[index].email = email;
+            rows[index].group = userGroup;
+            rows[index].status = profile;
+            setRows([...rows]);
+            setSelected([]);
+        }
+
     }
 
 
     if (search !== "") {
         let arr = [];
-        for (let i =0; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
             if (rows[i].name.toLowerCase().search(search) !== -1) {
                 arr.push(rows[i]);
             }
@@ -284,12 +297,12 @@ export default function EnhancedTable({search}) {
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
+    const handleClick = (event, row, index) => {
+        const selectedIndex = selected.indexOf(row.name);
 
+        let newSelected = [];
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, row.name);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -302,6 +315,8 @@ export default function EnhancedTable({search}) {
         }
 
         setSelected(newSelected);
+        setSelectedRow(row);
+        setSelectedIndex(index);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -322,15 +337,15 @@ export default function EnhancedTable({search}) {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     let visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage,
-            )
-    
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage,
+    )
+
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2, }}>
-                <EnhancedTableToolbar selected={selected} numSelected={selected.length} setRows={addRow}/>
+                <EnhancedTableToolbar setOpen={setOpen} mOpen={mOpen} selected={selectedRow} selectedIndex={selectedIndex} numSelected={selected.length} setRows={addRow} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -352,7 +367,7 @@ export default function EnhancedTable({search}) {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
-                                        onClick={(event) => handleClick(event, row.name)}
+                                        onClick={(event) => handleClick(event, row, index)}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
@@ -362,7 +377,7 @@ export default function EnhancedTable({search}) {
                                     >
                                         <TableCell padding="checkbox">
                                             <Checkbox
-                                                style={{color: "#22a565"}}
+                                                style={{ color: "#22a565" }}
                                                 checked={isItemSelected}
                                                 inputProps={{
                                                     'aria-labelledby': labelId,
@@ -377,11 +392,11 @@ export default function EnhancedTable({search}) {
                                         >
                                             {row.name}
                                         </TableCell>
-                                        <TableCell align="right">{row.username}</TableCell>
-                                        <TableCell align="right">{row.email}</TableCell>
-                                        <TableCell align="right">{row.group}</TableCell>
-                                        <TableCell align="right">{row.status}</TableCell>
-                                        <TableCell align="right">{row.createdon}</TableCell>
+                                        <TableCell >{row.username}</TableCell>
+                                        <TableCell>{row.email}</TableCell>
+                                        <TableCell>{row.group}</TableCell>
+                                        <TableCell>{row.status}</TableCell>
+                                        <TableCell>{row.createdon}</TableCell>
                                     </TableRow>
                                 );
                             })}

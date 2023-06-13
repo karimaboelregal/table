@@ -26,6 +26,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import EnhancedTable from './table';
+import AddIcon from '@mui/icons-material/Add';
 
 const drawerWidth = 220;
 
@@ -105,22 +106,53 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
+function createData(name, username, email, group, status, createdon) {
+    return {
+        name,
+        username,
+        email,
+        group,
+        status,
+        createdon
+    };
+}
+
+const nRows = [
+    createData('Ramy Mohsen-1', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Ramy Mohsen-2', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Ramy Mohsen-3', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Ramy Mohsen-4', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Ramy Mohsen-5', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+]
+
+
 
 class miniDrawer extends React.Component {
     constructor() {
         super()
         this.state = {
             open: true,
-            searchValue: ""
+            searchValue: "",
+            mOpen: false
         }
         this.updateSearch = this.updateSearch.bind(this);
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
+        this.setOpen = this.setOpen.bind(this);
     }
 
     updateSearch(target) {
         this.setState({searchValue: target.target.value});
     }
+
+    setOpen(open) {
+        this.setState({mOpen: open});
+    }
+
+
+
+
+
 
     handleDrawerOpen() {
         this.setState({ open: true })
@@ -187,6 +219,9 @@ class miniDrawer extends React.Component {
 
                     <Box sx={{ display: 'flex', justifyContent: "space-between", paddingBottom: "30px" }}>
                         <Typography variant="h6" fontWeight={"bold"}>User Management</Typography>
+                        <Button variant="contained" onClick={this.setOpen} startIcon={<AddIcon />} style={{ backgroundColor: "#22a565", textTransform: 'none' }}>
+                        Add New
+                    </Button>
                     </Box>
                     <Box sx={{ display: "flex", background: "white", flexDirection: "column", gap: "10px", width: "100%", padding: "20px", border: "1px solid lightgrey", borderRadius: "7px" }}>
                         <Box sx={{ display: "flex", gap: "10px" }}>
@@ -243,7 +278,7 @@ class miniDrawer extends React.Component {
                             <Button variant="text" style={{ textTransform: 'none' }}>All Filters</Button>
                         </Box>
                         <Box>
-                            <EnhancedTable search={this.state.searchValue}/>
+                            <EnhancedTable mOpen={this.state.mOpen} setOpen={this.setOpen} search={this.state.searchValue} nRows={nRows}/>
                         </Box>
 
                     </Box>

@@ -23,7 +23,7 @@ export default function NestedList({title, items, selected=false}) {
         <ListItemText primary={title} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit style={open===true?{background: "#1e2642", color: "white"}: {}}>
+      <Collapse in={open} timeout="auto" style={open===true?{background: "#1e2642", color: "white"}: {}}>
         <List component="div" disablePadding>
         {items.map((text, index) => (
           <ListItemButton key={index} sx={{ pl: 4 }}>
