@@ -7,7 +7,6 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -27,7 +26,6 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import EnhancedTable from './table';
 import AddIcon from '@mui/icons-material/Add';
-
 const drawerWidth = 220;
 
 const openedMixin = (theme) => ({
@@ -36,8 +34,8 @@ const openedMixin = (theme) => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
     }),
-    overflowX: 'hidden',
     background: "#050e2d",
+    overflowX: "hidden",
     color: "#747a8a"
 });
 
@@ -57,12 +55,12 @@ const closedMixin = (theme) => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
-    overflowX: 'hidden',
     width: `0px`,
     [theme.breakpoints.up('sm')]: {
         width: `0px`,
     },
     background: "#050e2d",
+    overflowX: "hidden",
     color: "#686e80"
 
 });
@@ -118,11 +116,9 @@ function createData(name, username, email, group, status, createdon) {
 }
 
 const nRows = [
-    createData('Ramy Mohsen-1', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-2', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-3', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-4', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
-    createData('Ramy Mohsen-5', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Aly Gamal', "Aly.Gamal", "ali.gamal@gmail.com", "Head Office", "Inactive", "Sep 09, 2023"),
+    createData('Ramy Mohsen', "ramy.mohsen", "ramy.mohsen@google.com", "Office", "Locked", "Dec 10, 2022"),
+    createData('Karim Mohamed', "Karim.Mohamed", "Karim.Mohamed@gmail.com", "Manager", "Active", "Jan 15, 2020"),
 ]
 
 
@@ -132,21 +128,31 @@ class miniDrawer extends React.Component {
         super()
         this.state = {
             open: true,
-            searchValue: "",
+            searchFilters: {"search": "", "userSearch": "", "userStatus": "", "creationDate": ""},
             mOpen: false
         }
         this.updateSearch = this.updateSearch.bind(this);
+        this.updateUserSearch = this.updateUserSearch.bind(this);
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.setOpen = this.setOpen.bind(this);
     }
 
     updateSearch(target) {
-        this.setState({searchValue: target.target.value});
+        let x = {...this.state.searchFilters};
+        x["search"] = target.target.value;
+        this.setState({ searchFilters: x });
     }
 
+    updateUserSearch(target) {
+        let x = {...this.state.searchFilters};
+        x["userSearch"] = target.target.value;
+        this.setState({ searchFilters: x });
+    }
+
+
     setOpen(open) {
-        this.setState({mOpen: open});
+        this.setState({ mOpen: open });
     }
 
 
@@ -189,30 +195,31 @@ class miniDrawer extends React.Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <Drawer variant="permanent" open={this.state.open} style={{ backgroundColor: "#050e2d" }}>
-                    <List>
-                        <ListItem>
-                            <img src="https://i.imgur.com/uJFV4RF.png" width="200px" height="70px" alt="icon" />
-                        </ListItem>
-                        <ListItem >
-                            <input style={{ "padding": "10px", borderRadius: "15px", "width": "100%", "border": "none", "outline": "none" }} placeholder='Quick access' />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemIcon sx={{ mr: 1, minWidth: 0, justifyContent: 'initial' }} style={{ color: "#686e80" }}><DashboardIcon /></ListItemIcon>
-                            <ListItemText primary="Dashboard" />
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="SETTINGS" sx={{ color: "grey" }} />
-                        </ListItem>
-                        <NestedList title="ATM Settings" items={["ATM-Placeholder", "ATM-Placeholder", "ATM-Placeholder"]} />
-                        <NestedList title="Business setup" items={["Business-Placeholder", "Business-Placeholder", "Business-Placeholder"]} />
-                        <NestedList title="User Management" items={["Users", "Profiles", "Groups"]} selected={true} />
-                        <ListItemButton><ListItemText primary="License Management" /></ListItemButton>
-                    </List>
-                </Drawer>
+                <Box>
+                    <Drawer variant="permanent" open={this.state.open} style={{ backgroundColor: "#050e2d" }}>
+                        <List>
+                            <ListItem>
+                                <img src="https://i.imgur.com/uJFV4RF.png" width="200px" height="70px" alt="icon" />
+                            </ListItem>
+                            <ListItem >
+                                <input style={{ "padding": "10px", borderRadius: "15px", "width": "100%", "border": "none", "outline": "none" }} placeholder='Quick access' />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon sx={{ mr: 1, minWidth: 0, justifyContent: 'initial' }} style={{ color: "#686e80" }}><DashboardIcon /></ListItemIcon>
+                                <ListItemText primary="Dashboard" />
+                            </ListItem>
+                        </List>
+                        <List>
+                            <ListItem>
+                                <ListItemText primary="SETTINGS" sx={{ color: "grey" }} />
+                            </ListItem>
+                            <NestedList title="ATM Settings" items={["ATM-Placeholder", "ATM-Placeholder", "ATM-Placeholder"]} />
+                            <NestedList title="Business setup" items={["Business-Placeholder", "Business-Placeholder", "Business-Placeholder"]} />
+                            <NestedList title="User Management" items={["Users", "Profiles", "Groups"]} selected={true} />
+                            <ListItemButton><ListItemText primary="License Management" /></ListItemButton>
+                        </List>
+                    </Drawer>
+                </Box>
 
                 <Box component="main" sx={{ flexGrow: 1, p: 3, background: "whitesmoke", height: "100vh" }}>
                     <DrawerHeader />
@@ -220,8 +227,8 @@ class miniDrawer extends React.Component {
                     <Box sx={{ display: 'flex', justifyContent: "space-between", paddingBottom: "30px" }}>
                         <Typography variant="h6" fontWeight={"bold"}>User Management</Typography>
                         <Button variant="contained" onClick={this.setOpen} startIcon={<AddIcon />} style={{ backgroundColor: "#22a565", textTransform: 'none' }}>
-                        Add New
-                    </Button>
+                            Add New
+                        </Button>
                     </Box>
                     <Box sx={{ display: "flex", background: "white", flexDirection: "column", gap: "10px", width: "100%", padding: "20px", border: "1px solid lightgrey", borderRadius: "7px" }}>
                         <Box sx={{ display: "flex", gap: "10px" }}>
@@ -239,7 +246,7 @@ class miniDrawer extends React.Component {
                                 id="search"
                                 size="small"
                             />
-                            <TextField label="User Name" style={{ width: "150px" }} id="username" size="small" />
+                            <TextField label="User Name" style={{ width: "150px" }} onChange={this.updateUserSearch} id="username" size="small" />
 
 
                             <FormControl sx={{ minWidth: "150px" }} size="small">
@@ -275,10 +282,11 @@ class miniDrawer extends React.Component {
                                     <MenuItem value={30}>Thirty</MenuItem>
                                 </Select>
                             </FormControl>
+
                             <Button variant="text" style={{ textTransform: 'none' }}>All Filters</Button>
                         </Box>
                         <Box>
-                            <EnhancedTable mOpen={this.state.mOpen} setOpen={this.setOpen} search={this.state.searchValue} nRows={nRows}/>
+                            <EnhancedTable mOpen={this.state.mOpen} setOpen={this.setOpen} search={this.state.searchFilters} nRows={nRows} />
                         </Box>
 
                     </Box>

@@ -253,14 +253,13 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
 
     let [rows, setRows] = React.useState(nRows);
 
-
     function addRow(name, user, email, userGroup, profile, index = -1) {
         if (index === -1) {
             setRows([...rows, createData(name, user, email, userGroup, profile, "Dec 10, 2022")]);
         } else {
 
             rows[index].name = name;
-            rows[index].user = user;
+            rows[index].username = user;
             rows[index].email = email;
             rows[index].group = userGroup;
             rows[index].status = profile;
@@ -271,10 +270,10 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
     }
 
 
-    if (search !== "") {
+    if (search["search"] !== "" || search["userSearch"] !== "") {
         let arr = [];
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].name.toLowerCase().search(search) !== -1) {
+            if (rows[i].name.toLowerCase().search(search["search"].toLowerCase()) !== -1 & rows[i].username.toLowerCase().search(search["userSearch"].toLowerCase()) !== -1) {
                 arr.push(rows[i]);
             }
         }
@@ -299,7 +298,7 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
 
     const handleClick = (event, row, index) => {
         const selectedIndex = selected.indexOf(row.name);
-
+        setSelectedRow(0);
         let newSelected = [];
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, row.name);
@@ -315,8 +314,6 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
         }
 
         setSelected(newSelected);
-        setSelectedRow(row);
-        setSelectedIndex(index);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -364,6 +361,10 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
 
                             {visibleRows.map((row, index) => {
                                 const isItemSelected = isSelected(row.name);
+                                if (selectedRow === 0 & isItemSelected) {
+                                    setSelectedRow(row);
+                                    setSelectedIndex(index);
+                                }                        
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow

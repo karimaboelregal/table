@@ -36,8 +36,8 @@ export default function BasicModal({ setRows, open, setOpen, row, index, setRow 
         name = row.name;
         user = row.username;
         email = row.email;
-        userGroup = row.status;
-        profile = row.group;
+        userGroup = row.group;
+        profile = row.status;
     }
 
     const handleClose = () => { setOpen(false); setRow(""); }
@@ -119,7 +119,7 @@ export default function BasicModal({ setRows, open, setOpen, row, index, setRow 
 
                     <Box sx={{ p: 2 }}>
                         <Typography id="modal-modal-description">
-                            User Group
+                            User    
                         </Typography>
                         <FormControl sx={{ minWidth: "100%", marginTop: "10px" }} size="small">
                             <InputLabel id="demo-select-small-label">User Group</InputLabel>
@@ -130,9 +130,9 @@ export default function BasicModal({ setRows, open, setOpen, row, index, setRow 
                                 defaultValue={userGroup}
                                 onChange={(event) => userGroup = event.target.value}
                             >
-                                <MenuItem value={"Active"}>Active</MenuItem>
-                                <MenuItem value={"Inactive"} selected>Inactive</MenuItem>
-                                <MenuItem value={"Locked"}>Locked</MenuItem>
+                                <MenuItem value={"Head Office"}>Head Office</MenuItem>
+                                <MenuItem value={"Manager"}>Managers</MenuItem>
+                                <MenuItem value={"Office"}>Office</MenuItem>
                             </Select>
                         </FormControl>
 
@@ -152,9 +152,9 @@ export default function BasicModal({ setRows, open, setOpen, row, index, setRow 
                                 defaultValue={profile}
                                 onChange={(event) => profile = event.target.value}
                             >
-                                <MenuItem value={"Head Office"}>Head Office</MenuItem>
-                                <MenuItem value={"Manager"}>Managers</MenuItem>
-                                <MenuItem value={"Office"}>Office</MenuItem>
+                                <MenuItem value={"Active"}>Active</MenuItem>
+                                <MenuItem value={"Inactive"} selected>Inactive</MenuItem>
+                                <MenuItem value={"Locked"}>Locked</MenuItem>
                             </Select>
                         </FormControl>
 

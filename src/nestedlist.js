@@ -15,15 +15,15 @@ export default function NestedList({title, items, selected=false}) {
 
   return (
     <List
-      sx={{ width: '100%', maxWidth: 360, bgcolor: '#050e2d', color: "#686e80" }}
+      sx={{ width: '100%',  bgcolor: '#050e2d', color: "#686e80" }}
       component="nav"
-      aria-labelledby="nested-list-subheader"
+      aria-labelledby={title}
     >
       <ListItemButton onClick={handleClick} style={open===true?{background: "#22a565", color: "white"}: {}}>
         <ListItemText primary={title} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={open} timeout="auto" style={open===true?{background: "#1e2642", color: "white"}: {}}>
+      <Collapse in={open} timeout="auto" unmountOnExit style={open===true?{background: "#1e2642", color: "white"}: {}}>
         <List component="div" disablePadding>
         {items.map((text, index) => (
           <ListItemButton key={index} sx={{ pl: 4 }}>
