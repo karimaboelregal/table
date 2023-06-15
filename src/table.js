@@ -171,6 +171,22 @@ function EnhancedTableToolbar(props) {
             setIndex(props.selectedIndex);
         }
     };
+    const deleteItem = () => {
+        if (props.numSelected < 1) {
+            alert("please select more than one item");
+        } else {
+            let allIndexes = [];
+            for (let i = 0; i < props.selectedRows.length; i++) {
+                for (let j = 0; j < props.allRows.length; j++) {
+                    if (props.allRows[j].name === props.selectedRows[i]) {
+                        allIndexes.push(j);
+                    }
+                }
+            }
+            
+            props.deleteRow(allIndexes);
+        }
+    }
 
 
     return (
@@ -199,7 +215,7 @@ function EnhancedTableToolbar(props) {
                         <EditIcon />
                     </IconButton>
 
-                    <IconButton aria-label="Example" sx={{ backgroundColor: "whitesmoke", "color": "black", borderRadius: "4px" }}>
+                    <IconButton onClick={deleteItem} aria-label="Example" sx={{ backgroundColor: "whitesmoke", "color": "black", borderRadius: "4px" }}>
                         <NotInterestedIcon />
                     </IconButton>
                     <IconButton aria-label="Example" sx={{ backgroundColor: "whitesmoke", "color": "black", borderRadius: "4px" }}>
@@ -266,7 +282,15 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
             setRows([...rows]);
             setSelected([]);
         }
+    }
 
+    function deleteRow(index) {
+        let newArr = rows
+        for (let i = 0; i < index.length; i++) {
+            newArr.splice(index, 1);
+        }
+        setRows(newArr);
+        setSelected([]);
     }
 
 
@@ -342,7 +366,7 @@ export default function EnhancedTable({ search, nRows, mOpen, setOpen }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2, }}>
-                <EnhancedTableToolbar setOpen={setOpen} mOpen={mOpen} selected={selectedRow} selectedIndex={selectedIndex} numSelected={selected.length} setRows={addRow} />
+                <EnhancedTableToolbar deleteRow={deleteRow} allRows={rows}  setOpen={setOpen} selectedRows={selected} mOpen={mOpen} selected={selectedRow} selectedIndex={selectedIndex} numSelected={selected.length} setRows={addRow} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
